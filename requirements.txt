@@ -1,0 +1,14 @@
+accelerate==1.2.1
+datasets==3.2.0
+fastapi==0.115.6
+numpy==1.26.3
+openai==1.59.3
+scikit-learn==1.6.1
+torch==2.5.1+cu124
+torchaudio==2.5.1+cu124
+torchvision==0.20.1+cu124
+tqdm==4.67.1
+transformers==4.47.1
+vllm==0.6.6.post1
+xformers==0.0.28.post3
+rouge==1.0.1
