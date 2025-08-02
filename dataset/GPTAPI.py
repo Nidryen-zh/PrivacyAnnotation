@@ -4,7 +4,6 @@ import openai
 from openai import OpenAI
 import concurrent.futures
 from tqdm import tqdm
-from GPTAPI_config import api_base
 import time
 import re
 import os

@@ -1,5 +1,5 @@
 from GPTAPI import safe_chatgpt, safe_chatgpt_for_json
-from dataset.detect_private_information_GPT_TEMPLATE import *
+from detect_private_information_GPT_TEMPLATE import *
 
 import json 
 import os
@@ -79,7 +79,7 @@ class PrivateInfoWithPhraseDetector(PrivateDetector):
     def __init__(self, file_path, file_path_output, shot=None, language="en"):
         super().__init__(file_path, file_path_output, shot, language)
 
-    def _detect_privacy_for_one_text(self, input_text, entities) -> dict:
+    def _detect_privacy_for_one_text(self, input_text, phrases) -> dict:
         """detect private info and phrase from a text
 
         Args:
@@ -100,7 +100,7 @@ class PrivateInfoWithPhraseDetector(PrivateDetector):
         system = ""
         
         result = {}
-        for e in entities:
+        for e in phrases:
             if self.language == "en":
                 template = DETECT_PRIVATE_INFO_WITH_PHRASE_TEMPLATE_EN
             else:
@@ -143,8 +143,8 @@ class PrivateInfoWithPhraseDetector(PrivateDetector):
             for item in self.data:
                 for conv in item["conversation"]:
                     input_text = conv["user"]
-                    entities = conv["privacy"]["private_entities"]
-                    future = executor.submit(self._detect_privacy_for_one_text, input_text, entities)
+                    phrases = conv["privacy"]["phrase"]
+                    future = executor.submit(self._detect_privacy_for_one_text, input_text, phrases)
                     future.add_done_callback(lambda p: process_bar.update(1))
                     all_tasks.append(future)
 
@@ -163,12 +163,13 @@ class PrivateInfoWithPhraseDetector(PrivateDetector):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='private filter')
+    parser.add_argument('--file_path', '-f', type=str, default="privacy_data/shareGPT/privacy_phrase/data_split_0_10/finegrained_merge_phrase_final.json")
+    parser.add_argument('--file_path_output', '-o', type=str, default="privacy_data/shareGPT/privacy_information/data_split_0_10/privacy_information.json")
     parser.add_argument('--language','-l',type=str, default="en")
-    parser.add_argument('--dataset','-d',type=str, default="CrossWOZ")
     args = parser.parse_args()
 
-    file_path = f"privacy_data/{args.dataset}/privacy_phrase/data_split/dev/finegrained_merge_phrase_after_rule1andrule2.json"
-    file_path_output = f"privacy_data/{args.dataset}/privacy_information/data_split/dev/privacy_information.json"
+    file_path = args.file_path
+    file_path_output = args.file_path_output
     private_info_detector = PrivateInfoWithPhraseDetector(file_path, file_path_output, language=args.language)
     private_info_detector.detect_privacy()
     private_info_detector.save()

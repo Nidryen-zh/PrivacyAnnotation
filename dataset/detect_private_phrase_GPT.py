@@ -168,27 +168,27 @@ class PrivatePhraseMerger:
         self.gpt_error_count = 0
         self.language = language
 
-    def _merge_entities_with_rules(self, entities):
+    def _merge_phrases_with_rules(self, phrases):
         def _contained(phrase1, phrase2):
             if phrase1 in phrase2:
                 return True
             else:
                 return False
 
-        contain_matrix = [[0 for _ in range(len(entities))] for _ in range(len(entities))]
-        for i, phrase1 in enumerate(entities):
-            for j, phrase2 in enumerate(entities):
+        contain_matrix = [[0 for _ in range(len(phrases))] for _ in range(len(phrases))]
+        for i, phrase1 in enumerate(phrases):
+            for j, phrase2 in enumerate(phrases):
                 if _contained(phrase1, phrase2):
                     contain_matrix[i][j] = 1
         
-        entities_new = []
-        for i in range(len(entities)):
+        phrases_new = []
+        for i in range(len(phrases)):
             if sum(contain_matrix[i]) <= 1:
-                entities_new.append(entities[i])
-        return entities_new
+                phrases_new.append(phrases[i])
+        return phrases_new
 
-    def _merge_entities_for_one_text(self, input_text, entities, skip=False):
-        entities = self._merge_entities_with_rules(entities)
+    def _merge_phrases_for_one_text(self, input_text, phrases, skip=False):
+        phrases = self._merge_phrases_with_rules(phrases)
 
         system = ""
         # system = "You are a helpful assistant."
@@ -196,30 +196,30 @@ class PrivatePhraseMerger:
             template = MERGE_PRIVATE_PHRASE_TEMPLATE_EN
         else:
             template = MERGE_PRIVATE_PHRASE_TEMPLATE_ZH
-        message = template.replace("<|QUERY|>", input_text).replace("<|ENTITIES|>", str(entities))
+        message = template.replace("<|QUERY|>", input_text).replace("<|PHRASES|>", str(phrases))
         
         detailed_informations = []
-        if not skip and len(entities) > 0:
+        if not skip and len(phrases) > 0:
             if self.debug:
                 result, raw_result = safe_chatgpt_for_json(message=message, system=system, debug=True)
                 detailed_information = {"system": system, "message": message, "GPT_output": raw_result}
                 detailed_informations.append(detailed_information)
             else:
                 result = safe_chatgpt_for_json(message=message, system=system, debug=False)
-        elif len(entities) == 0:
+        elif len(phrases) == 0:
             result = []
         else:
             result = "<|GPT_ERROR|>" ## debug skip this step
 
         if result == "<|GPT_ERROR|>":
             self.gpt_error_count += 1
-            result = entities
+            result = phrases
         if self.debug:
             return input_text, result, detailed_informations
         else:
             return input_text, result
     
-    def merge_entities(self, skip=False):
+    def merge_phrases(self, skip=False):
         '''
         input form: 
         {
@@ -234,8 +234,7 @@ class PrivatePhraseMerger:
             "user": xxx
             "assistant": xxx
             "privacy": {
-                "private_entities": [],
-                "private_sentences": []
+                "phrase": []
             }
         }
         '''
@@ -249,8 +248,8 @@ class PrivatePhraseMerger:
             for item in self.data:
                 for conv in item["conversation"]:
                     input_text = conv["user"]
-                    entities = list(conv['privacy'].keys())
-                    future = executor.submit(self._merge_entities_for_one_text, input_text, entities, skip)
+                    phrases = list(conv['privacy'].keys())
+                    future = executor.submit(self._merge_phrases_for_one_text, input_text, phrases, skip)
                     future.add_done_callback(lambda p: process_bar.update(1))
                     all_tasks.append(future)
 
@@ -267,7 +266,7 @@ class PrivatePhraseMerger:
         for item in self.data_output:
             for conv in item["conversation"]:
                 assert conv["user"] == output[index][0], "Something wrong with the multithread, the data order is changed"
-                conv["privacy"] = {"private_entities": output[index][1], "private_sentences": []}
+                conv["privacy"] = {"phrase": output[index][1]}
                 if self.debug:
                     self.deltail_informations += output[index][2]
                 index += 1
@@ -293,16 +292,16 @@ class PrivatePhraseCleaner:
         self.gpt_error_count = 0
         self.template = template
 
-    def _detect_for_one_text(self, input_text, entities, template):
+    def _detect_for_one_text(self, input_text, phrases, template):
         result = {"judgment": True, "reason": ""}
         # system = "You are an expert in privacy detection."
         # system = "You are a helpful assistant."
         system = ""
 
         detailed_informations = []
-        output_entities = []
+        output_phrases = []
             
-        for phrase in entities:
+        for phrase in phrases:
             message = template.replace("<|QUERY|>", input_text).replace("<|PHRASE|>", str(phrase))
         
             if self.debug:
@@ -316,12 +315,12 @@ class PrivatePhraseCleaner:
                 self.gpt_error_count += 1
                 result = {"judgment": True, "reason": ""}
             if result['judgment']:
-                output_entities.append(phrase)
+                output_phrases.append(phrase)
 
         if self.debug:
-            return input_text, output_entities, detailed_informations
+            return input_text, output_phrases, detailed_informations
         else:
-            return input_text, output_entities
+            return input_text, output_phrases
 
     def detect(self):
         with concurrent.futures.ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
@@ -334,8 +333,8 @@ class PrivatePhraseCleaner:
             for item in self.data:
                 for conv in item["conversation"]:
                     input_text = conv["user"]
-                    entities = conv['privacy']['private_entities']
-                    future = executor.submit(self._detect_for_one_text, input_text, entities, self.template)
+                    phrases = conv['privacy']['phrase']
+                    future = executor.submit(self._detect_for_one_text, input_text, phrases, self.template)
                     future.add_done_callback(lambda p: process_bar.update(1))
                     all_tasks.append(future)
 
@@ -352,7 +351,7 @@ class PrivatePhraseCleaner:
         for item in self.data_output:
             for conv in item["conversation"]:
                 assert conv["user"] == output[index][0], "Something wrong with the multithread, the data order is changed"
-                conv["privacy"]['private_entities'] = output[index][1]
+                conv["privacy"]['phrase'] = output[index][1]
                 if self.debug:
                     self.deltail_informations += output[index][2]
                 index += 1
@@ -384,15 +383,15 @@ if __name__ == "__main__":
     private_phrase_detector.save()
     private_phrase_detector.save_detailed_information()
 
-    ## [STEP 3-2] remove similar entities
+    ## [STEP 3-2] remove similar phrases
     file_path = os.path.join(file_output_dir, "finegrained.json")
     file_path_output = os.path.join(file_output_dir, "finegrained_merge_phrase.json")
     private_phrase_merger = PrivatePhraseMerger(file_path, file_path_output, shot=None, debug=DEBUG, language=args.language)
-    private_phrase_merger.merge_entities(skip=False)
+    private_phrase_merger.merge_phrases(skip=False)
     private_phrase_merger.save()
     private_phrase_merger.save_detailed_information()
 
-    ## [STEP 3-3] clean the entities with rules - rule 1
+    ## [STEP 3-3] clean the phrases with rules - rule 1
     file_path = os.path.join(file_output_dir, "finegrained_merge_phrase.json")
     file_path_output = os.path.join(file_output_dir, "finegrained_merge_phrase_after_rule1.json")
     if args.language == "en":
@@ -404,9 +403,9 @@ if __name__ == "__main__":
     private_phrase_cleaner.save()
     private_phrase_cleaner.save_detailed_information()
 
-    ## [STEP 3-4] clean the entities with rules - rule 2
+    ## [STEP 3-4] clean the phrases with rules - rule 2
     file_path = os.path.join(file_output_dir, "finegrained_merge_phrase_after_rule1.json")
-    file_path_output = os.path.join(file_output_dir, "finegrained_merge_phrase_after_rule1andrule2.json")
+    file_path_output = os.path.join(file_output_dir, "finegrained_merge_phrase_final.json")
     if args.language == "en":
         template = CLEAN_PRIVATE_ONE_PHRASE_RULE2_TEMPLATE_EN
     else:

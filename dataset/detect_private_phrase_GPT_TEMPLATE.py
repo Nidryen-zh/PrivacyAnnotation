@@ -141,7 +141,7 @@ JSON输出：
 MERGE_PRIVATE_PHRASE_TEMPLATE_EN = '''Given a user's query and privacy phrases extracted from the query, 
 
 Query: "<|QUERY|>"
-Privacy Phrases: <|ENTITIES|>
+Privacy Phrases: <|PHRASES|>
 
 Think step by step to deduplicate the privacy phrases by strictly following the given rules:
 
@@ -165,7 +165,7 @@ JSON output:
 MERGE_PRIVATE_PHRASE_TEMPLATE_ZH = '''给定一个用户请求（Query）和从请求中提取的隐私短语（Phrase），
 
 用户请求："<|QUERY|> "
-隐私短语：<|ENTITIES|>
+隐私短语：<|PHRASES|>
 
 一步一步地思考（Think Step by Step），严格按照给定的规则对隐私短语进行去重：
 

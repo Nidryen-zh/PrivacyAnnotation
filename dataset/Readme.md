@@ -47,25 +47,30 @@ The whole parameter set of this script:
 - file_output_dir: the output directory for the extracted categories, the final results will be saved at file_output_dir/private_categories_merged.json.
 - language: the language of the dataset, support English ("en") and Chinese ("zh")
 
+
 ## Step 3: Privacy Phrase Extraction
-The third step is to 
+The third step is to extract privacy phrase for the dataset. We also recommend processing the divided smaller segments. 
+This step takes the results from both Step 1 and Step 2 as input and outputs the extracted privacy phrase for each sample.
 
-
-## How to run
-To get the annotated data from dialogue datasets, you can simply run our code. The only thing to note is to modify the path to your raw data, i.e., the data input parameter.
-
-1. Preprocess the raw data, please refer to `preprocess.py`. 
-2. Privacy Leakage Classification
+Here is an example to run the privacy phrase extraction script:
 ```bash
-python detect_privacy_leakage_GPT.py -f <raw data path> -o <output data path> -l <dataset language>
-```
-3. Privacy Category Extraction & Privacy Phrase Extraction
-```bash
-python detect_privacy_phrase_GPT.py -f <raw data path> -o <output data path> -l <dataset language> -d <dataset name>
-```
-4. Privacy Information Annotation
-```bash
-python detect_privacy_information_GPT.py -l <dataset language> -d <dataset name>
-```
+python detect_private_phrase_GPT.py --file_path privacy_data/shareGPT/privacy_leaked/common_en_70k_example_0_10.json --file_category_path privacy_data/shareGPT/privacy_category/private_categories_merged.json --file_output_dir privacy_data/shareGPT/privacy_phrase/data_split_0_10 --language en
+``` 
+The whole parameter set of this script:
+- file_path: the path to the data labeled with privacy leakage
+- file_category_path: the path to the extensive categories set extracted by step 2 
+- file_output_dir: the output directory for the extracted privacy phrases, the final results will be saved at file_output_dir/finegrained_merge_phrase_final.json.
+- language: the language of the dataset, support English ("en") and Chinese ("zh")
 
 
+## Step 4: Privacy Information Annotation
+The fourth step is to annotate privacy information for each phrase. This step takes the results from Step 3 as input and otuputs the annotated privacy information for each extracted phrase.
+
+Here is an example to run the privacy inforamtion annotation script:
+```bash
+python detect_private_information_GPT.py --file_path privacy_data/shareGPT/privacy_phrase/data_split_0_10/finegrained_merge_phrase_final.json --file_path_output privacy_data/shareGPT/privacy_information/data_split_0_10/privacy_information.json --language en
+```
+The whole parameter set of this script:  
+- file_path: the path of the data with extracted privacy phrases
+- file_path_output: the output path of the annotation results
+- language: the language of the dataset, support English ("en") and Chinese ("zh")
