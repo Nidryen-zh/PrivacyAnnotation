@@ -28,6 +28,7 @@ class PrivateDataFilter:
     def __init__(self, file_path, file_path_output, start_idx=0, end_idx=None, language='en', debug=False):
         self.file_path = file_path
         self.file_path_output = file_path_output
+        # load preprocessed data
         logging.info("The input file is {}".format(file_path))
         logging.info("The output file is {}".format(file_path_output))
         with open(file_path, encoding='utf-8') as f:
@@ -35,12 +36,11 @@ class PrivateDataFilter:
         logging.info("The length of input file: {}".format(len(self.data)))
 
         self.language = language
+        # if debug, the original response from LLM will be recorded
         self.debug = debug
         self.gpt_error_count = 0
 
     def _detect_for_one_text(self, input_text):
-        # system = "You are a helpful assistant."
-        # system = "Think step by step to judge whether the query reveals any new privacy-sensitive information of the user or the user's related people or things."
         system = ""
         if self.language == 'en':
             template = DATASET_PRIVACY_FILTER_TEMPLATE_EN
@@ -49,6 +49,7 @@ class PrivateDataFilter:
         message = template.replace("<|QUERY|>", input_text)
 
         detailed_informations = []
+        # pose requests to LLM API
         if self.debug:
             result, raw_result = safe_chatgpt_for_json(message=message, system=system, debug=True)
             detailed_information = {"system": system, "message": message, "GPT_output": raw_result}
@@ -77,6 +78,7 @@ class PrivateDataFilter:
             } 
         }
         '''
+        # multi-thread
         with concurrent.futures.ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
             all_tasks = []
             count = 0
@@ -87,6 +89,7 @@ class PrivateDataFilter:
             for item in self.data:
                 for conv in item["conversation"]:
                     input_text = conv["user"]
+                    # pose requests to LLM API
                     future = executor.submit(self._detect_for_one_text, input_text)
                     future.add_done_callback(lambda p: process_bar.update(1))
                     all_tasks.append(future)
@@ -94,6 +97,7 @@ class PrivateDataFilter:
             output = [t.result() for t in all_tasks]
             process_bar.close()
 
+        # merge the final output
         self.postpreprocess_output(output)
         logging.info("End Dectection with GPT ERROT: {}".format(self.gpt_error_count))
 
@@ -121,19 +125,22 @@ class PrivateDataFilter:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='private filter')
-    parser.add_argument('--file_path', '-f', type=str)
-    parser.add_argument('--file_path_output', '-o', type=str)
+    parser.add_argument('--file_path', '-f', type=str, default="preprocess_data/shareGPT/common_en_70k_example.json")
+    parser.add_argument('--file_path_output', '-o', type=str, default="privacy_data/shareGPT/privacy_leaked/common_en_70k_example.json")
     parser.add_argument('--language', '-l', type=str, default="en", choices=['en', 'zh']) # en: English & zh: Chinese
     parser.add_argument('--start_idx', '-s', type=int, default=0)
     parser.add_argument('--end_idx', '-e', type=int, default=None)
     args = parser.parse_args()
 
+    # Since the raw data is often too long, it is recommended to split it into smaller segments using the predefined parameters start_idx and end_idx.
     start_idx = args.start_idx
     end_idx = args.end_idx
-    logging.info("Start detece private leakage GPT: start idx {} - end idx {}".format(start_idx, end_idx))
+    logging.info("Start detece private leakage: start idx {} - end idx {}".format(start_idx, end_idx))
     file_path = args.file_path
-    file_path_output = args.file_path_output
+    file_path_output = args.file_path_output.replace(".json", f"{start_idx}_{end_idx}.json")
     private_category_detector = PrivateDataFilter(file_path, file_path_output, start_idx=0, end_idx=None, language=args.language, debug=True)
+    # detect privacy leakage
     private_category_detector.detect()
+    # save the result
     private_category_detector.save()
     private_category_detector.save_detailed_information()

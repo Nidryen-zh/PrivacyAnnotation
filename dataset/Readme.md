@@ -1,4 +1,19 @@
+# Automated Privacy Annotation Pipeline
+
 > You can put our dataset into the `privacy_data` folder
+
+## Step 0: set your environment
+Export your OpenAI API key to the environment:
+```bash
+export OPENAI_API_KEY=<your own key>
+```
+
+Set your python environment:
+```bash
+pip install openai 
+```
+
+## Step 1: Privacy Leakage or Not Classification
 
 ## How to run
 To get the annotated data from dialogue datasets, you can simply run our code. The only thing to note is to modify the path to your raw data, i.e., the data input parameter.

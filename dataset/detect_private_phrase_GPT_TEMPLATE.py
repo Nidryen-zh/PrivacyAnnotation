@@ -1,4 +1,23 @@
-# STEP 2
+# baselines - direct extract
+DETECT_PRIVATE_PHRASE_TEMPLATE_EN_BASELINE = '''Given a user's query 
+
+"<|QUERY|>"
+
+identify which phrases in the query leak the user's privacy information.
+Let's think step by step and output a json finally.
+The result output should be in json format with the following format:
+```json
+[phrase 1, phrase 2, ...]
+```
+
+Here is an example
+"Query": "I'm a teacher in China, majoring in computer science. I will go back home to London."
+Output:
+```json
+["teacher", "computer science", "China", "London"]
+```
+'''
+
 DETECT_PRIVATE_CATEGORY_TEMPLATE_EN_BASELINE = '''Given a user's query 
 
 "<|QUERY|>"
@@ -11,13 +30,14 @@ The result output should be in json format with the following format:
 ```
 
 Here is an example
-"Query": "I'm a teacher at China, majoring in computer science. I will go back home to London."
+"Query": "I'm a teacher in China, majoring in computer science. I will go back home to London."
 Output:
 ```json
 ["teacher", "computer science", "China", "London"]
 ```
 '''
 
+# STEP 2 - extract categories
 DETECT_PRIVATE_CATEGORY_TEMPLATE_EN = '''Given a user's query 
 
 "<|QUERY|>"
@@ -33,7 +53,7 @@ The result output should be in json format with the following format:
 ```
 
 Here is an example
-"Query": "I'm a teacher at China, majoring in computer science. I will go back home to London."
+"Query": "I'm a teacher in China, majoring in computer science. I will go back home to London."
 Output:
 ```json
 {
@@ -69,7 +89,7 @@ JSON输出：
 ```
 '''
 
-# STEP 3-1
+# STEP 2-1 - categories deduplication
 MERGE_PRIVATE_CATEGORY_BYBLOCK_TEMPLATE_EN = '''Given the following <BLOCK_SIZE> privacy categories and the list of example phrases belong to each privacy category:
 
 <|CATEGORY_INPUT|>
@@ -90,7 +110,7 @@ MERGE_PRIVATE_CATEGORY_BYBLOCK_TEMPLATE_ZH = '''给定以下<BLOCK_SIZE>个隐�
 [隐私类别1, 隐私类别2, ... ]
 '''
 
-# STEP 3-2
+# STEP 2-2 - whole categories deduplication
 MERGE_PRIVATE_CATEGORY_BYBLOCK_TOTAL_TEMPLATE_EN = '''Given the following privacy categories:
 
 <|ALL_CATEGORY|>
@@ -111,11 +131,9 @@ MERGE_PRIVATE_CATEGORY_BYBLOCK_TOTAL_TEMPLATE_ZH = '''给定以下隐私类别�
 [隐私类别1, 隐私类别2, ... ]
 '''
 
-# STEP 4-1
+# STEP 3-1 - privacy phrase extraction
 DETECT_PRIVATE_PHRASE_WITH_CATEGORY_TEMPLATE_EN = '''A user poses a query
-
-"<|QUERY|>"
-
+"<|QUERY|>" 
 to you. 
 
 Extract informative phrases from the query that definitely reveal the privacy-sensitive information of the user, or user related people or things. 
@@ -134,7 +152,7 @@ The result output should be in json format with the following format:
 }
 
 Here are some examples
-User's Query: "I'm a teacher at China, majoring in computer science. I will go back home to London."
+User's Query: "I'm a teacher in China, majoring in computer science. I will go back home to London."
 Privacy Categories: ["Name", "Age", "Gender", "Job", "Subject", "Location"]
 JSON Output:
 ```json
@@ -175,7 +193,6 @@ JSON Output:
 '''
 
 DETECT_PRIVATE_PHRASE_WITH_CATEGORY_TEMPLATE_ZH = '''用户向你提出一个请求（Query）
-
 "<|QUERY|>"
 
 从请求的内容中提取短语，该短语明确揭示用户的，或与用户相关的人或事物的隐私敏感信息。
@@ -233,7 +250,7 @@ JSON输出：
 
 '''
 
-# STEP 4-2
+# STEP 3-2 - privacy phrase deduplication
 MERGE_PRIVATE_PHRASE_TEMPLATE_EN = '''Given a user's query and privacy phrases extracted from the query, 
 
 Query: "<|QUERY|>"
@@ -282,7 +299,7 @@ JSON输出：
 ```
 '''
 
-# STEP 4-3
+# STEP 3-3 - filtering privacy phrase with rule 1
 CLEAN_PRIVATE_ONE_PHRASE_RULE1_TEMPLATE_EN = '''A user poses a query 
 
 "<|QUERY|>"
@@ -395,6 +412,7 @@ JSON输出：
 
 '''
 
+# STEP 3-3 - filtering privacy phrase with rule 2
 CLEAN_PRIVATE_ONE_PHRASE_RULE2_TEMPLATE_EN = '''A user poses a query 
 "<|QUERY|>"
 to you with a real unique identifier. 

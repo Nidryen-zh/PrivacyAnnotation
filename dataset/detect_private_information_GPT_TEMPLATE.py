@@ -1,4 +1,4 @@
-DETECT_PRIVATE_INFO_TEMPLATE = '''Please determine whether the user's Query has leaked the user's private information. If private information is leaked, extract the leaked private information as much as possible and express it in one or several short sentences, and return a list with elements being the short sentences. If no private information is leaked, return an empty list.
+DETECT_PRIVATE_INFO_TEMPLATE_EN_BASELINE = '''Please determine whether the user's Query has leaked the user's private information. If private information is leaked, extract the leaked private information as much as possible and express it in one or several short sentences, and return a list with elements being the short sentences. If no private information is leaked, return an empty list.
 The short sentences should briefly describe what private information of the user has been leaked.
 
 Here is an example:
@@ -14,24 +14,7 @@ Output:
 
 '''
 
-DETECT_PRIVATE_PHRASE_AND_INFO_TEMPLATE = '''Please determine whether the user's Query has leaked the user's private information. If private information is leaked, extract the leaked entities from the user's Query as much as possible and express specifically what privacy has been leaked in one or several short sentences. Return a dictionary containing two keys: "private_entities", which is a list of entities that have leaked privacy, and "private_sentences", which is a list of short sentences. If no private information is leaked, the values in the returned dictionary should be empty lists.
-The private entities should be extracted from the user's Query, and the short sentences should briefly describe what private information of the user has been leaked.
-Here is an example:
-Input:
-Query: "I am preparing to go home, back to London."
-Output:
-{
-    "private_entities": ["home", "London"],
-    "private_sentences": ["The user's home is in London.", "The user is preparing to go home.", "The user is preparing to go to London."]
-}
-s
-Now please determine:
-Input:
-Query: "<|INPUT_TEXT|>"
-Output:
-
-'''
-
+# STEP 4 - annotate privacy information
 DETECT_PRIVATE_INFO_WITH_PHRASE_TEMPLATE_EN = '''A user poses a query 
 "<|QUERY|>"
 to you with a real unique identifier. 
@@ -115,24 +98,6 @@ JSON输出：
 ```
 '''
 
-COMPARE_TWO_PRIVACY_INFO = '''Given two privacy information sentences of the user ANL, please determine whether these two privacy information sentences express the same meaning. 
-
-"privacy information sentence 1": <|PRIVACY_INFO_1|>, 
-"privacy information sentence 2": <|PRIVACY_INFO_2|>
-
-Think step by step and output a json finally.
-
-[Rule 1] If one of the privacy information sentence indicates that no user privacy information has been disclosed, the answer should be None. 
-[Rule 2] If two privacy information sentences express the same meaning, the answer should be true; otherwise, the answer should be false. 
-[Rule 3] If one of the privacy information sentence is empty, the answer should be None. 
-
-The result output should be in json format with the following format:
-{
-    "answer": The answer should be true, false or none.
-    "reason": short reason of your answer. 
-}
-
-'''
 
 
 

@@ -31,11 +31,9 @@ def chatgpt(message, system="You are a helpful assistant."):
     print(response['data']['choices'][0]['message']['content'])
     '''
 
-    openai_api_base = api_base
-    openai_api_key = "whatever"
-    client = OpenAI(api_key=openai_api_key, base_url=openai_api_base)
-    model_name = "azure-gpt-4o" # azure-gpt-4o-mini
-    extra_query = {"source": "research_sjtu"}
+    openai_api_key = os.environ.get("OPENAI_API_KEY", "")
+    model_name = "gpt-4o-2024-08-06"
+    client = OpenAI(api_key=openai_api_key)
     messages = [
                 {"role": "system", "content": system},
                 {"role": "user", "content":  message},
@@ -44,7 +42,6 @@ def chatgpt(message, system="You are a helpful assistant."):
                 model=model_name,
                 messages=messages,
                 timeout=60,
-                extra_query=extra_query,
                 temperature=0
     )
     return chat_response
@@ -189,7 +186,14 @@ def safe_chatgpt_for_bool(message, system="You are a helpful assistant."):
 if __name__ == "__main__":
     # system = "You are a helpful assistant."
     system = ""
-    message = '''helo'''
+    message = '''who are you. 
+output your result in following format:
+```json
+{
+    "response": xxx
+}
+```
+'''
 
     print(message)
     print("======================")
