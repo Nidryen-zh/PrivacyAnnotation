@@ -26,14 +26,19 @@ MAX_WORKERS = 8
 
 class PrivateDataFilter:
     def __init__(self, file_path, file_path_output, start_idx=0, end_idx=None, language='en', debug=False):
-        self.file_path = file_path
-        self.file_path_output = file_path_output
         # load preprocessed data
-        logging.info("The input file is {}".format(file_path))
-        logging.info("The output file is {}".format(file_path_output))
         with open(file_path, encoding='utf-8') as f:
-            self.data = json.load(f)[start_idx:end_idx]
+            self.data = json.load(f)
+            self.original_data_len = len(self.data)
+            self.data = self.data[start_idx:end_idx]
         logging.info("The length of input file: {}".format(len(self.data)))
+        if end_idx == None:
+            end_idx = self.original_data_len
+
+        self.file_path = file_path
+        self.file_path_output = file_path_output.replace(".json", f"_{start_idx}_{end_idx}.json")
+        logging.info("The input file is {}".format(self.file_path))
+        logging.info("The output file is {}".format(self.file_path_output))
 
         self.language = language
         # if debug, the original response from LLM will be recorded
@@ -57,9 +62,9 @@ class PrivateDataFilter:
         else:
             result = safe_chatgpt_for_json(message=message, system=system, debug=False)
 
-        if result == "<|GPT_ERROR|>" or "judgement" not in result:
+        if result == "<|GPT_ERROR|>" or "judgment" not in result:
             self.gpt_error_count += 1
-            result = {"reason": "<|GPT_ERROR_IN_CODE|>", "judgement": False}
+            result = {"reason": "<|GPT_ERROR_IN_CODE|>", "judgment": False}
         
         if self.debug:
             return input_text, result, detailed_informations
@@ -132,12 +137,12 @@ if __name__ == "__main__":
     parser.add_argument('--end_idx', '-e', type=int, default=None)
     args = parser.parse_args()
 
-    # Since the raw data is often too long, it is recommended to split it into smaller segments using the predefined parameters start_idx and end_idx.
+    # Since raw datasets are often large, it is recommended to divide them into smaller segments using the predefined parameters start_idx and end_idx.
     start_idx = args.start_idx
     end_idx = args.end_idx
     logging.info("Start detece private leakage: start idx {} - end idx {}".format(start_idx, end_idx))
     file_path = args.file_path
-    file_path_output = args.file_path_output.replace(".json", f"{start_idx}_{end_idx}.json")
+    file_path_output = args.file_path_output
     private_category_detector = PrivateDataFilter(file_path, file_path_output, start_idx=0, end_idx=None, language=args.language, debug=True)
     # detect privacy leakage
     private_category_detector.detect()

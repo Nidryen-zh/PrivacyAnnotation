@@ -1,0 +1,106 @@
+{
+    "Age": {
+        "phrase": [
+            "17 years old"
+        ],
+        "id": 10
+    },
+    "Interests": {
+        "phrase": [
+            "jazz and music lover",
+            "process of making music"
+        ],
+        "id": 5
+    },
+    "Job Title/Role": {
+        "phrase": [
+            "CTO"
+        ],
+        "id": 8
+    },
+    "Personal Habits": {
+        "phrase": [
+            "not super organized",
+            "working on establishing a better and more consistent and productive daily routine"
+        ],
+        "id": 14
+    },
+    "Job": {
+        "phrase": [
+            "researcher"
+        ],
+        "id": 6
+    },
+    "Name": {
+        "phrase": [
+            "John"
+        ],
+        "id": 4
+    },
+    "Profession/Skill": {
+        "phrase": [
+            "web and app development"
+        ],
+        "id": 3
+    },
+    "Certification": {
+        "phrase": [
+            "certified in full-stack development"
+        ],
+        "id": 12
+    },
+    "Education": {
+        "phrase": [
+            "don’t have a degree"
+        ],
+        "id": 11
+    },
+    "Professional Role": {
+        "phrase": [
+            "recruit top engineers"
+        ],
+        "id": 15
+    },
+    "Rate/Income": {
+        "phrase": [
+            "$400/hour"
+        ],
+        "id": 2
+    },
+    "Skills": {
+        "phrase": [
+            "solid understanding of the hardware components that make up a drone",
+            "decent understanding of data science and ML"
+        ],
+        "id": 13
+    },
+    "Business Information": {
+        "phrase": [
+            "building a platform that allows users to install apps on drones",
+            "startup is in the pre-seed stage"
+        ],
+        "id": 9
+    },
+    "Subject": {
+        "phrase": [
+            "education",
+            "technology",
+            "human resource development",
+            "knowledge management"
+        ],
+        "id": 7
+    },
+    "Financial Information": {
+        "phrase": [
+            "$8000 a month",
+            "currently raising $500k"
+        ],
+        "id": 1
+    },
+    "Job/Profession": {
+        "phrase": [
+            "web design"
+        ],
+        "id": 0
+    }
+}

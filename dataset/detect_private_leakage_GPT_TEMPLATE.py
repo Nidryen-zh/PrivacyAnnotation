@@ -1,4 +1,4 @@
-DATASET_PRIVACY_FILTER_TEMPLATE_EN = '''A user poses a query
+DATASET_PRIVACY_FILTER_TEMPLATE_EN = '''A user poses a queryjudgment
 
 "<|QUERY|>"
 
@@ -15,8 +15,8 @@ Give your think steps. Your reasoning must depend on the direct evidences contai
 Then, output a json as follows:
 ```json
 {
-    "reason": reason for your judgement,
-    "judgement": true or false
+    "reason": reason for your judgment,
+    "judgment": true or false
 }
 ```
 
@@ -26,7 +26,7 @@ JSON Output:
 ```json
 {
     "reason": "This query exposes the activity of the user and people related to the user intend to do.",
-    "judgement": true
+    "judgment": true
 }
 ```
 
@@ -35,7 +35,7 @@ JSON Output:
 ```json
 {
     "reason": "This query may contain the user's interest, but there is no direct evidence that the user is interested in Hamlet.",
-    "judgement": false
+    "judgment": false
 }
 ```
 
@@ -44,7 +44,7 @@ JSON Output:
 ```json
 {
     "reason": "There is no direct evidence that Jane is related to the user.",
-    "judgement": false
+    "judgment": false
 }
 ```
 
@@ -53,7 +53,7 @@ JSON Output:
 ```json
 {
     "reason": "This query exposes the preference, concern and opinion of the user.",
-    "judgement": true
+    "judgment": true
 }
 ```
 
@@ -75,7 +75,7 @@ DATASET_PRIVACY_FILTER_TEMPLATE_ZH = '''用户向你提出一个请求（Query�
 ```json
 {
     "reason": 你判断的理由,
-    "judgement": true 或 false
+    "judgment": true 或 false
 }
 ```
 
@@ -85,7 +85,7 @@ JSON输出：
 ```json
 {
     "reason": "该请求透露了用户及与用户相关的人打算进行的活动。",
-    "judgement": true
+    "judgment": true
 }
 ```
 
@@ -94,7 +94,7 @@ JSON输出：
 ```json
 {
     "reason": "该请求可能包含用户的兴趣，但没有直接证据表明用户对哈姆雷特感兴趣。",
-    "judgement": false
+    "judgment": false
 }
 ```
 
@@ -103,7 +103,7 @@ JSON输出：
 ```json
 {
     "reason": "请求中没有直接证据表明简与用户有关。",
-    "judgement": false
+    "judgment": false
 }
 ```
 
@@ -112,7 +112,7 @@ JSON输出：
 ```json
 {
     "reason": "该请求透露了用户的偏好、担忧和意见。",
-    "judgement": true
+    "judgment": true
 }
 ```
 
