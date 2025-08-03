@@ -99,7 +99,7 @@ class PrivateInfoWithPhraseDetector(PrivateDetector):
         # system = "You are an expert in privacy information detection."
         system = ""
         
-        result = {}
+        result = []
         for e in phrases:
             if self.language == "en":
                 template = DETECT_PRIVATE_INFO_WITH_PHRASE_TEMPLATE_EN
@@ -114,7 +114,7 @@ class PrivateInfoWithPhraseDetector(PrivateDetector):
             if output == "<|GPT_ERROR|>" or type(output) != dict:
                 self.gpt_error_count += 1
                 output = {"phrase": e, "privacy information": "<|GPT_ERROR|>"}
-            result[e] = output
+            result.append(output)
         if DEBUG:
             return input_text, result, detailed_informations
         else:
