@@ -1,6 +1,6 @@
 # Automated Privacy Annotation Pipeline
 
-> You can put our dataset into the `privacy_data` folder
+> An example of the original source datasets is provided in the raw_data folder, and examples of the annotated results can be found in the privacy_data folder.
 
 ## Step 0: set your environment
 Export your OpenAI API key to the environment:
@@ -11,9 +11,25 @@ export OPENAI_API_KEY=<your own key>
 Set your python environment:
 ```bash
 pip install openai 
+pip install requests
 ```
 
-## Step 1: Privacy Leakage or Not Classification  
+Preprocess the original source datasets to origize all the data into the format as below:
+```json
+{
+    "id": "ShareGPT_AzsVtVQ",
+    "conversation": [
+        {
+            "user": "Are you busy?",
+            "assistant": "I am a computer program and do not have the ability to be busy. I am always ready to assist you with any questions or information you may need. How can I help you today?"
+        },
+    ]
+}
+```
+- id: the id for current conversation
+- conversation: the content of the dialogue between the user and the assistant. It may contain multiple turns.
+
+## Step 1: Privacy Leakage or Not Classification    
 The first step is to label the preprocessed data based on whether it contains any privacy information.
 Since raw datasets are often large, it is recommended to divide them into smaller segments using the predefined parameters start_idx and end_idx.
 
