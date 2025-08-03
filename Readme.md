@@ -154,14 +154,27 @@ We also provide examples of preprocess data in `dataset/preprocess_data` and exa
 
 ## 🛠️ Train & Evaluate Local Privacy Detection Model
 
+### Set the environment
+You can set your python environment with following instructions:
+```bash
+conda create -n trainer python=3.9
+conda activate trainer
+
+pip install -r requirements.txt
+```
+
 ### Train
 You can simply run the tuning script to get a model with supervised fine-tuning after setting the model name and the training data path.
 ```bash
 bash finetune/finetune_lora_ds.sh
 ```
-In the script, environment variable `MODEL` is the model name used for fine-tuning and `DATA` is the training data path. 
-Please change `language` parameter to "en" for English dataset or to "zh" for Chinese dataset. 
-Please change `tuning_mode` parameter to _all_, _phrase_only_, or _leakage_only_ for privacy information summarization, privacy phrase extraction, and privacy leakage classification task, respectively.
+In the script, environment variable `MODEL` is the model name used for fine-tuning and `DATA` is the training data path. The `DATA` parameter also accepts Hugging Face repository name, for example, `Nidhogg-zh/Interaction_Dialogue_with_Privacy`.  
+
+We also provide an example of training data in [dataset/privacy_data/shareGPT/privacy_information_train.json](https://github.com/Nidryen-zh/PrivacyAnnotation/blob/master/dataset/privacy_data/shareGPT/privacy_information_train.json). You can use this data for quick start. 
+
+Other paremeters:
+- change `language` parameter to "en" for English dataset or to "zh" for Chinese dataset.   
+- change `tuning_mode` parameter to _all_, _phrase_only_, or _leakage_only_ for privacy information summarization, privacy phrase extraction, and privacy leakage classification task, respectively.
 
 ### Evaluate 
 #### Get results of local privacy detection methods
@@ -229,5 +242,16 @@ python output/evaluate_leakage.py -l <test data path> -p <model prediction path>
 Although the fine-tuned Qwen2.5-7B model achieves a binary privacy leakage classification accuracy of 87.6%, its performance on more complex tasks remains insufficient for practical deployment. For instance, the best fine-tuned model attains a phrase-level F1 score of 74.3% and an information-level F1 score of only 44.7% on the Chinese dataset. These results emphasize the need for exploring more effective methods grounded in our dataset.
 
 ## Citation
-
-### Bib
+### BibTeX
+Please kindly cite our paper if helps your research:
+```bib
+@misc{zeng2025automatedprivacyinformationannotation,
+      title={Automated Privacy Information Annotation in Large Language Model Interactions}, 
+      author={Hang Zeng and Xiangyu Liu and Yong Hu and Chaoyue Niu and Fan Wu and Shaojie Tang and Guihai Chen},
+      year={2025},
+      eprint={2505.20910},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL},
+      url={https://arxiv.org/abs/2505.20910}, 
+}
+```

@@ -1,5 +1,5 @@
 #!/bin/bash
-export CUDA_DEVICE_MAX_CONNECTIONS=1
+export CUDA_DEVICE_MAX_CONNECTIONS=0
 DIR=`pwd`
 
 # Guide:
@@ -78,7 +78,7 @@ torchrun $DISTRIBUTED_ARGS finetune.py \
     --model_name_or_path $MODEL \
     --data_path $DATA \
     --fp16 False \
-    --output_dir output/shareGPT_only_leakage/${MODEL} \
+    --output_dir output/shareGPT/${MODEL} \
     --num_train_epochs 10 \
     --per_device_train_batch_size 8 \
     --per_device_eval_batch_size 8 \
@@ -100,5 +100,5 @@ torchrun $DISTRIBUTED_ARGS finetune.py \
     --gradient_checkpointing \
     --language en \
     --deepspeed ${DS_CONFIG_PATH} \
-    --tuning_mode "leakage_only" 
+    --tuning_mode "all" 
 

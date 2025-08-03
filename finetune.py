@@ -291,15 +291,7 @@ def train():
             config=config,
             torch_dtype=compute_dtype,
             cache_dir=training_args.cache_dir,
-            device_map=device_map,
-            quantization_config=BitsAndBytesConfig(
-                load_in_4bit=False,
-                bnb_4bit_use_double_quant=True,
-                bnb_4bit_quant_type="nf4",
-                bnb_4bit_compute_dtype=compute_dtype,
-            )
-            if training_args.use_lora and lora_args.q_lora
-            else None
+            device_map=device_map
         )
     tokenizer = transformers.AutoTokenizer.from_pretrained(
         model_args.model_name_or_path,
@@ -338,9 +330,6 @@ def train():
         if training_args.gradient_checkpointing:
             model.enable_input_require_grads()
     
-    rank0_print("============================================= MODEL TYPE =============================================")
-    rank0_print(model.dtype)
-    rank0_print("======================================================================================================")
     # Load data
     data_module = make_supervised_data_module(
         tokenizer=tokenizer, data_args=data_args, max_len=training_args.model_max_length
