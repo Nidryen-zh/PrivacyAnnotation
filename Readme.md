@@ -2,7 +2,7 @@
 
 <div align="center">
   <figure>
-    <img src="https://github.com/Nidryen-zh/PrivacyAnnotation/blob/master/asserts/pipeline.png" alt="category_count_en" width="1000"/>
+    <img src="asserts/pipeline.png" alt="pipeline" width="1000"/>
     <figcaption>Overview of our automated pipeline to extract privacy phrase and annotate privacy information over dialogue datasets</figcaption>
   </figure>
 </div>
@@ -199,11 +199,34 @@ python output/evaluate_leakage.py -l <test data path> -p <model prediction path>
 - Supervised Fine-Tuning (SFT): tune based on the annotated dataset to enable the model to judge privacy leakage or to generate structured phrases and corresponding information
 
 #### Results of privacy leakage classification.
+<div align="center">
+  <figure>
+    <img src="asserts/query_result_acc.png" alt="query" width="1000"/>
+    <figcaption>Accuracy (%) of different baselines for privacy leakage classification.
+</figcaption>
+  </figure>
+</div>
+
 
 #### Results of privacy phrase extraction. 
+<div align="center">
+  <figure>
+    <img src="asserts/phrase_result_f1.png" alt="phrase" width="1000"/>
+    <figcaption>Phrase-level F1 score (%) of different baselines for privacy phrase extraction.
+</figcaption>
+  </figure>
+</div>
 
 #### Results of privacy information summarization.
+<div align="center">
+  <figure>
+    <img src="asserts/information_result_f1.png" alt="information" width="1000"/>
+    <figcaption>Inforamtion-level F1 score (%) of different baselines for privacy information annotation.
+</figcaption>
+  </figure>
+</div>
 
+Although the fine-tuned Qwen2.5-7B model achieves a binary privacy leakage classification accuracy of 87.6%, its performance on more complex tasks remains insufficient for practical deployment. For instance, the best fine-tuned model attains a phrase-level F1 score of 74.3% and an information-level F1 score of only 44.7% on the Chinese dataset. These results emphasize the need for exploring more effective methods grounded in our dataset.
 
 ## Citation
 
