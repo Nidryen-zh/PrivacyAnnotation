@@ -12,7 +12,7 @@ Input:
 Query: "<|INPUT_TEXT|>"
 Output:
 
-'''
+''' 
 
 # STEP 4 - annotate privacy information
 DETECT_PRIVATE_INFO_WITH_PHRASE_TEMPLATE_EN = '''A user poses a query 
