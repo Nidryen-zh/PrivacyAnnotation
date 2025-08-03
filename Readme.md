@@ -2,7 +2,7 @@
 
 <div align="center">
   <figure>
-    <img src="https://huggingface.co/datasets/Nidhogg-zh/Interaction_Dialogue_with_Privacy/resolve/main/asserts/pipeline.png" alt="category_count_en" width="1000"/>
+    <img src="https://github.com/Nidryen-zh/PrivacyAnnotation/blob/master/asserts/pipeline.png" alt="category_count_en" width="1000"/>
     <figcaption>Overview of our automated pipeline to extract privacy phrase and annotate privacy information over dialogue datasets</figcaption>
   </figure>
 </div>
@@ -192,6 +192,17 @@ python output/evaluate_leakage.py -l <test data path> -p <model prediction path>
 ```
 
 ### Preliminary results
+
+#### Baselines 
+- Zero-shot Generation (ZG): directly prompt local LLMs to determine whether the query leaks privacy or to extract privacy phrases and corresponding information.
+- Learning (ICL): based on the prompts of ZG, five examples randomly sampled from training data are further inserted
+- Supervised Fine-Tuning (SFT): tune based on the annotated dataset to enable the model to judge privacy leakage or to generate structured phrases and corresponding information
+
+#### Results of privacy leakage classification.
+
+#### Results of privacy phrase extraction. 
+
+#### Results of privacy information summarization.
 
 
 ## Citation
