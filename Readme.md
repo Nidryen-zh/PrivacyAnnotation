@@ -236,7 +236,6 @@ For privacy information summarization task:
 python output/get_pred_results_information.py -d <test data path> -o <model prediction path> 
 ```
 
-
 To get evaluation results based on test set, you can run following scripts.
 For privacy leakage classification task, we adopt accuracy to  assess performance.
 ```bash
