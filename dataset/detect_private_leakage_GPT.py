@@ -148,4 +148,5 @@ if __name__ == "__main__":
     private_category_detector.detect()
     # save the result
     private_category_detector.save()
-    private_category_detector.save_detailed_information()
+    private_category_detector.save_detailed_information() 
+    

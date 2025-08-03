@@ -241,7 +241,7 @@ JSON Output:
 } 
 ```
 
-'''
+''' 
 
 CLEAN_PRIVATE_ONE_PHRASE_RULE1_TEMPLATE_ZH = '''用户向你提出一个请求（Query）
 

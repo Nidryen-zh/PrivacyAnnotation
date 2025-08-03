@@ -174,4 +174,3 @@ if __name__ == "__main__":
     private_info_detector.detect_privacy()
     private_info_detector.save()
     private_info_detector.save_detailed_information()
-

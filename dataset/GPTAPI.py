@@ -180,7 +180,7 @@ def safe_chatgpt_for_bool(message, system="You are a helpful assistant."):
             retry_interval += 1 
             time.sleep(retry_interval)
     return "<|GPT_ERROR|>"
-
+ 
 
 if __name__ == "__main__":
     # system = "You are a helpful assistant."

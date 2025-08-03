@@ -391,3 +391,4 @@ if __name__ == "__main__":
     private_category_analyzer.save_private_categories()
     private_category_analyzer.merge_synonyms()
     private_category_analyzer.save_private_categories_merged()
+    

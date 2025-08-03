@@ -111,3 +111,4 @@ MERGE_PRIVATE_CATEGORY_BYBLOCK_TOTAL_TEMPLATE_ZH = '''给定以下隐私类别�
 以列表格式输出去重后的新的隐私类别，例如：
 [隐私类别1, 隐私类别2, ... ]
 '''
+

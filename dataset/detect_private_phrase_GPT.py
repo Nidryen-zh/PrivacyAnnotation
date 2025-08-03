@@ -354,7 +354,7 @@ class PrivatePhraseCleaner:
                 conv["privacy"]['phrase'] = output[index][1]
                 if self.debug:
                     self.deltail_informations += output[index][2]
-                index += 1
+                index += 1 
 
     def save(self):
         os.makedirs(os.path.split(self.file_path_output)[0], exist_ok=True)
