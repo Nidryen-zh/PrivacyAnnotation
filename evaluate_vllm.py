@@ -1,8 +1,3 @@
-
-'''
-deepspeed --num_gpus 8 --master_port 60000 evaluate.py --ds_inference
-'''
-
 import json
 import os 
 import argparse
@@ -207,29 +202,33 @@ class TextDataset(Dataset):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='argparse')
-    parser.add_argument('--model_name', '-m', type=str, default="meta-llama/Llama-3.2-3B-Instruct", help="a model's name")
-    parser.add_argument('--data_path', '-d', type=str, default="dataset/privacy_data/shareGPT/privacy_information_dev.json", help="data path")
-    parser.add_argument('--output_path', '-o', type=str, default="output/shareGPT/Llama_zero-shot/Llama-3.2-3B-Instruct/privacy_information_dev.json", help="output path")
+    parser.add_argument('--model_name', '-m', type=str, default="Qwen/Qwen2.5-1.5B-Instruct", help="a model's name")
+    parser.add_argument('--data_path', '-d', type=str, default="Nidhogg-zh/Interaction_Dialogue_with_Privacy", help="data path")
+    parser.add_argument('--output_path', '-o', type=str, default="output/shareGPT/Qwen_zero-shot/Qwen2.5-1.5B-Instruct/privacy_information_dev.json", help="output path")
     parser.add_argument('--few-shot', '-f', type=bool, default=False, help="whether use few shot")
     parser.add_argument('--trained', '-t', type=bool, default=False, help="whether the model is tuned")
     parser.add_argument('--phrase_only', type=bool, default=False, help="whether the model is tuned to predict only phrase")
     parser.add_argument('--leakage_only', type=bool, default=False, help="whether the model is tuned to predict only leakage")
     parser.add_argument("--batch_size", '-b', type=int, default=16)
     parser.add_argument("--language", '-l', type=str, default='en')
-    # distribute
-    parser.add_argument("--local_rank", type=int, default=0)
-    parser.add_argument("--ds_inference", action='store_true')
     args = parser.parse_args()
-    args.output_path = args.output_path.replace(".json", f"_rank{args.local_rank}.json")
 
     model, tokenizer = load_model_and_tokenizer(args.model_name)
     
     data_path = args.data_path
     output_path = args.output_path
 
-    data = load_data(data_path)
-    data_path_train = os.path.join(os.path.split(data_path)[0], "privacy_information_train.json")
-    data_train = load_data(data_path_train)
+    # load local data
+    if os.path.exists(data_path):
+        data = load_data(data_path, args.start_idx, args.end_idx)
+        data_path_train = os.path.join(os.path.split(data_path)[0], "privacy_information_train.json")
+        data_train = load_data(data_path_train)
+    # load from hugging face
+    else:
+        import datasets 
+        dataset = datasets.load_dataset(data_path, args.language)
+        data = dataset['test']
+        data_train = dataset['train']
 
     batch_size = args.batch_size
     text_dataset = TextDataset(data, data_train, trained=args.trained, few_shot=args.few_shot, language=args.language, phrase_only=args.phrase_only, leakage_only=args.leakage_only)

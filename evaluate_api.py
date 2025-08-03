@@ -185,9 +185,9 @@ def generate_for_one(msg, sys, ids, model_name):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='argparse')
-    parser.add_argument('--model_name', '-m', type=str, default="qwen2.5-72b-instruct", help="a model's name")
-    parser.add_argument('--data_path', '-d', type=str, default="dataset/privacy_data/Chinese/privacy_information_dev.json", help="data path")
-    parser.add_argument('--output_path', '-o', type=str, default="output/Chinese_only_phrase/Qwen_few-shot/Qwen2.5-72B-Instruct/privacy_information_dev.json", help="output path")
+    parser.add_argument('--model_name', '-m', type=str, default="qwen2.5-7b-instruct", help="a model's name")
+    parser.add_argument('--data_path', '-d', type=str, default="Nidhogg-zh/Interaction_Dialogue_with_Privacy", help="data path")
+    parser.add_argument('--output_path', '-o', type=str, default="output/shareGPT/Qwen_few-shot/Qwen2.5-7B-Instruct/privacy_information_dev.json", help="output path")
     parser.add_argument('--few-shot', '-f', action='store_true', help="whether use few shot")
     parser.add_argument('--phrase_only', type=bool, default=False, help="whether the model is tuned to predict only phrase")
     parser.add_argument('--leakage_only', type=bool, default=False, help="whether the model is tuned to predict only leakage")
@@ -199,10 +199,19 @@ if __name__ == "__main__":
 
     data_path = args.data_path
     output_path = args.output_path
+    
+    # load local data
+    if os.path.exists(data_path):
+        data = load_data(data_path, args.start_idx, args.end_idx)
+        data_path_train = os.path.join(os.path.split(data_path)[0], "privacy_information_train.json")
+        data_train = load_data(data_path_train)
+    # load from hugging face
+    else:
+        import datasets 
+        dataset = datasets.load_dataset(data_path, args.language)
+        data = dataset['test']
+        data_train = dataset['train']
 
-    data = load_data(data_path, args.start_idx, args.end_idx)
-    data_path_train = os.path.join(os.path.split(data_path)[0], "privacy_information_train.json")
-    data_train = load_data(data_path_train)
     text_dataset = TextDataset(data, data_train, few_shot=args.few_shot, language=args.language, phrase_only=args.phrase_only, leakage_only=args.leakage_only)
     print("========================= DATA INFO ==========================")
     print("DATA PATH: {}".format(data_path))

@@ -93,6 +93,6 @@ def safe_chatgpt_for_json(message, system, model_name, debug=False):
 if __name__ == "__main__":
     system = ""
     message = "how far？"
-    model_name = "qwen2.5-72b-instruct"
+    model_name = "qwen2.5-7b-instruct"
     response = generate(message, system, model_name)
     print(response.choices[0].message.content)

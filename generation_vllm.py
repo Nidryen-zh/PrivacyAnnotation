@@ -43,8 +43,8 @@ def generate_batch(model, tokenizer, message, system, ids):
     
 
 def load_model_and_tokenizer(model_name, torch_dtype=torch.float32):
-    model = LLM(model=model_name, dtype=torch_dtype, tensor_parallel_size=2, pipeline_parallel_size=1, max_model_len=8192)
-    tokenizer = AutoTokenizer.from_pretrained(model_name, padding_side='left', truncation_side='left', max_legth=8192, token=hf_token)
+    model = LLM(model=model_name, dtype=torch_dtype, tensor_parallel_size=1, pipeline_parallel_size=1, max_model_len=2048)
+    tokenizer = AutoTokenizer.from_pretrained(model_name, padding_side='left', truncation_side='left', max_legth=2048, token=hf_token)
     return model, tokenizer
 
 

@@ -116,7 +116,7 @@ export OPENAI_API_KEY=<your own key>
 
 Set your python environment:
 ```bash
-conda create -n annotator python=3.9
+conda create -n annotator python=3.12
 conda activate annotator
 
 pip install openai 
@@ -157,10 +157,11 @@ We also provide examples of preprocess data in `dataset/preprocess_data` and exa
 ### Set the environment
 You can set your python environment with following instructions:
 ```bash
-conda create -n trainer python=3.9
+conda create -n trainer python=3.12
 conda activate trainer
 
 pip install -r requirements.txt
+pip install deepspeed
 ```
 
 ### Train
