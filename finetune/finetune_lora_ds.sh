@@ -1,5 +1,6 @@
 #!/bin/bash
-export CUDA_DEVICE_MAX_CONNECTIONS=0
+export CUDA_VISIBLE_DEVICES=0
+export CUDA_DEVICE_MAX_CONNECTIONS=1
 DIR=`pwd`
 
 # Guide:
@@ -25,12 +26,10 @@ MASTER_PORT=${MASTER_PORT:-6001}
 
 ## CHANGE THE MODEL FOR FREE
 MODEL="Qwen/Qwen2.5-1.5B-Instruct" 
-# MODEL="/root/.cache/huggingface/hub/models--Qwen--Qwen2.5-1.5B-Instruct/snapshots/989aa7980e4cf806f80c7fef2b1adb7bc71aa306"
 
-# Set the path if you do not want to load from huggingface directly
-# ATTENTION: specify the path to your training data, which should be a json file consisting of a list of conversations.
-# See the section for finetuning in README for more information.
-DATA="dataset/privacy_data/shareGPT/privacy_information_train.json"
+# DATA="dataset/privacy_data/shareGPT/privacy_information_train.json"
+DATA="Nidhogg-zh/Interaction_Dialogue_with_Privacy"
+
 # You can also use ds_config_zero3.json
 DS_CONFIG_PATH="finetune/ds_config_zero2.json" 
 
@@ -80,8 +79,8 @@ torchrun $DISTRIBUTED_ARGS finetune.py \
     --fp16 False \
     --output_dir output/shareGPT/${MODEL} \
     --num_train_epochs 10 \
-    --per_device_train_batch_size 8 \
-    --per_device_eval_batch_size 8 \
+    --per_device_train_batch_size 4 \
+    --per_device_eval_batch_size 4 \
     --gradient_accumulation_steps 8 \
     --eval_strategy "no" \
     --save_strategy "steps" \
@@ -94,7 +93,7 @@ torchrun $DISTRIBUTED_ARGS finetune.py \
     --lr_scheduler_type "cosine" \
     --logging_steps 1 \
     --report_to "none" \
-    --model_max_length 1024 \
+    --model_max_length 2048 \
     --lazy_preprocess True \
     --use_lora \
     --gradient_checkpointing \

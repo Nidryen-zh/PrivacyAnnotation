@@ -3,7 +3,7 @@ import argparse
 import os
 import copy
 import re
-
+ 
 def merge_result(output_dir):
     exist_str = []
     results = []

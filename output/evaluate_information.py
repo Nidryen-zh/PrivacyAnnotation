@@ -147,7 +147,13 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     label_file_path = args.label_file_path
-    ground_truth = load_data(label_file_path)
+    if type(label_file_path) == str and (not os.path.exists(label_file_path)):
+        import datasets
+        dataset = datasets.load_dataset(label_file_path, args.language)
+        ground_truth = dataset['test']
+    else:
+        ground_truth = load_data(label_file_path)
+
 
     pred_file_path = args.pred_file_path
     prediction = load_data(pred_file_path) 

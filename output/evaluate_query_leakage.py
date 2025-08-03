@@ -96,6 +96,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='argparse')
     parser.add_argument('--label_file_path', '-l', type=str, default='dataset/privacy_data/shareGPT/privacy_information_dev.json', help="raw data")
     parser.add_argument('--pred_file_path', '-p', type=str, default="output/shareGPT/Qwen_zero-shot/Qwen2.5-72B-Instruct/privacy_information_dev.json", help="output dir")
+    parser.add_argument('--language', type=str, default="en", help="")
 
     args = parser.parse_args()
     print(args.pred_file_path)
@@ -104,7 +105,12 @@ if __name__ == '__main__':
         exit()
 
     label_file_path = args.label_file_path
-    ground_truth = load_data(label_file_path)
+    if type(label_file_path) == str and (not os.path.exists(label_file_path)):
+        import datasets
+        dataset = datasets.load_dataset(label_file_path, args.language)
+        ground_truth = dataset['test']
+    else:
+        ground_truth = load_data(label_file_path)
 
     pred_file_path = args.pred_file_path
     prediction = load_data(pred_file_path) 

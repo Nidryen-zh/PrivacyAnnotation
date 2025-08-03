@@ -246,3 +246,4 @@ if __name__ == "__main__":
     # os.makedirs(os.path.split(output_path)[0], exist_ok=True)
     # json.dump(results, open(output_path, 'w'), ensure_ascii=False, indent=4)
     
+    

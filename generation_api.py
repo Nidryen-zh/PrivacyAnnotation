@@ -96,3 +96,4 @@ if __name__ == "__main__":
     model_name = "qwen2.5-7b-instruct"
     response = generate(message, system, model_name)
     print(response.choices[0].message.content)
+    

@@ -214,4 +214,3 @@ DETECT_TRAIN_SYS_TEMPLATE_ZH = '''从Query中提取出能够揭示用户、用�
 '''
 DETECT_TRAIN_MSG_TEMPLATE_ZH = '''Query: "<|QUERY|>"'''
 
-

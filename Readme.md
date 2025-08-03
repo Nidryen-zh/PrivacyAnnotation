@@ -180,29 +180,85 @@ Other paremeters:
 ### Evaluate 
 #### Get results of local privacy detection methods
 We provide evaluation scripts for local models with vLLM, and cloud-based models with API. You can run following python files to get prediction resutls. 
+
+For local model:
 ```bash
-# for local model
-python evaluate_vllm.py -m <model name> -d <test data path> -o <output path> -t <is fine-tuned> -f <is few shot> -l <language>
+python evaluate_vllm.py --model_name <model name> --data_path <test data path> --output_path <output path> --trained <is fine-tuned> --few-shot <is few shot> --language <language>
 ```
+The whole parameter set of this script:  
+- model_name: the path of the model, also accepts Hugging Face repository name
+- data_path: the path of the annotated data, also accepts Hugging Face repository name'
+- output_path: the output path of evaluation results
+- few-shot: whether to use a few-shot or zero-shot setting, add --few-shot means use few-shot setting
+- trained: whether the model is fine-tuned on the annotated datasets, add --trained means the model is fine-tuned
+- phrase_only: whether to predict only the phrase, add --phrase_only means to predict only the phrase
+- leakage_only: whether to predict only query-level leakage
+- batch_size: the batch size for evaluation
+- language: the language of the dataset, support English ("en") and Chinese ("zh")
+
+> Please set `phrase_only` to true for phrase extraction task or `leakage_only` to true for leakage classification task 
+
+Here is an example for evaluating the performance of Qwen2.5-1.5B-Instruct with zero-shot generation for privacy phrase extraction task:
 ```bash
-# for cloud-based API
-python evaluate_api.py -m <model name> -d <test data path> -o <output path> -f <is few shot> -l <language>
+python evaluate_vllm.py --model_name Qwen/Qwen2.5-1.5B-Instruct --data_path Nidhogg-zh/Interaction_Dialogue_with_Privacy --output_path output/phrase_test_result.json --language en
 ```
-Please set `phrase_only` to true for phrase extraction task or `leakage_only` to true for leakage classification task 
+
+For cloud-based API: 
+```bash
+python evaluate_api.py --model_name <model name> --data_path <test data path> --output_path <output path> --few-shot <is few shot> --language <language>
+```
+The whole parameter set of this script:  
+- model_name: the path of the model, also accepts Hugging Face repository name
+- data_path: the path of the annotated data, also accepts Hugging Face repository name
+- output_path: the output path of evaluation results
+- few-shot: whether to use a few-shot or zero-shot setting, add --few-shot means use few-shot setting
+- phrase_only: whether to predict only the phrase, add --phrase_only means to predict only the phrase
+- leakage_only: whether to predict only query-level leakage
+- language: the language of the dataset, support English ("en") and Chinese ("zh")
+- start_idx: the starting index of the dataset list for current processing
+- end_idx: the ending index of the dataset list for current processing
+
+Since datasets are often large, it is recommended to divide them into smaller segments using the predefined parameters start_idx and end_idx for API-based evaluation to reduce the impact caused by interruptions. 
 
 #### Get evaluation resutls
 To merge the prediction resutls from different local ranks (only for multi-gpu prediction), you can run following python file. 
+
+For privacy leakage classification task:
 ```bash
-python output/get_pred_results_information.py -d <test data path> -o <model prediction path> # for information summarization task
-python output/get_pred_results_phrase.py -d <test data path> -o <model prediction path>      # for phrase extraction task
-python output/get_pred_results_leakage.py -d <test data path> -o <model prediction path>     # for leakage classification task
+python output/get_pred_results_leakage.py -d <test data path> -o <model prediction path>    
+```
+For privacy phrase extraction task:
+```bash
+python output/get_pred_results_phrase.py -d <test data path> -o <model prediction path>      
+```
+For privacy information summarization task:
+```bash
+python output/get_pred_results_information.py -d <test data path> -o <model prediction path> 
 ```
 
-To get evaluation results based on test set, you can run following python files.
+
+To get evaluation results based on test set, you can run following scripts.
+For privacy leakage classification task, we adopt accuracy to  assess performance.
 ```bash
-python output/evaluate_information.py -l <test data path> -p <model prediction path> --language <dataset language> # for information summarization task
-python output/evaluate_phrase.py -l <test data path> -p <model prediction path> --language <dataset language>      # for phrase extraction task
-python output/evaluate_leakage.py -l <test data path> -p <model prediction path> --language <dataset language>     # for leakage classification task
+python output/evaluate_leakage.py --label_file_path <test data path> --pred_file_path <model prediction path> --language <dataset language> 
+```
+For privacy phrase extraction task, we adopt designed precision, recall, and F1 score to evaluate the missed or incorrect extractions. 
+```bash
+python output/evaluate_phrase.py --label_file_path <test data path> --pred_file_path <model prediction path> --language <dataset language> 
+```     
+For privacy information summarization task, we adopt designed precision, recall, and F1 score to evaluate the missed or incorrect summaries. 
+```bash
+python output/evaluate_information.py --label_file_path <test data path> --pred_file_path <model prediction path> --language <dataset language> 
+```
+
+The whole parameter set of these scripts:  
+- label_file_path: the path of the annotated data (ground truth), also accepts Hugging Face repository name
+- pred_file_path: the path of the predicted data
+- language: the language of the dataset, support English ("en") and Chinese ("zh")
+
+Here is an example for getting the evaluation results of Qwen2.5-1.5B-Instruct with zero-shot generation for privacy phrase extraction task:
+```bash
+python output/evaluate_phrase.py --label_file_path Nidhogg-zh/Interaction_Dialogue_with_Privacy --pred_file_path output/phrase_test_result.json --language en
 ```
 
 ### Preliminary results

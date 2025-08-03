@@ -161,7 +161,6 @@ class LazySupervisedDataset(Dataset):
             }
         }
 
-
         rank0_print("Formatting inputs...Skip in lazy mode")
         self.tokenizer = tokenizer
         if language == "en":
@@ -173,8 +172,6 @@ class LazySupervisedDataset(Dataset):
         self.raw_data = self.preprocess_data(raw_data, tuning_mode)
         self.language = language
         self.tuning_mode = tuning_mode
-        ### DEBUG
-        json.dump(self.raw_data, open("tmp/train_data.json", 'w'), ensure_ascii=False, indent=4)
 
         self.cached_data_dict = {}
         rank0_print("============================================= DATA INFO =============================================")
@@ -230,11 +227,26 @@ def make_supervised_data_module(
     dataset_cls = LazySupervisedDataset
     rank0_print("Loading data...")
 
-    train_json = json.load(open(data_args.data_path, "r"))
+    # load local data
+    if os.path.exists(data_args.data_path):
+         train_json = json.load(open(data_args.data_path, "r"))
+    # load from hugging face
+    else:
+        import datasets 
+        dataset = datasets.load_dataset(data_args.data_path, data_args.language)
+        train_json = dataset['train']
+
     train_dataset = dataset_cls(train_json, tokenizer=tokenizer, max_len=max_len, language=data_args.language, tuning_mode=data_args.tuning_mode)
 
     if data_args.eval_data_path:
-        eval_json = json.load(open(data_args.eval_data_path, "r"))
+        # load local data
+        if os.path.exists(data_args.eval_data_path):
+            eval_json = json.load(open(data_args.eval_data_path, "r"))
+        # load from hugging face
+        else:
+            import datasets 
+            dataset = datasets.load_dataset(data_args.eval_data_path, data_args.language)
+            eval_json = dataset['test']
         eval_dataset = dataset_cls(eval_json, tokenizer=tokenizer, max_len=max_len, language=data_args.language, tuning_mode=data_args.tuning_mode)
     else:
         eval_dataset = None

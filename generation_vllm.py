@@ -64,3 +64,4 @@ if __name__ == "__main__":
         prompt = output.prompt
         generated_text = output.outputs[0].text
         # print(f"Prompt: {prompt}, Generated text: {generated_text}")
+
