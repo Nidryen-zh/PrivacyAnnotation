@@ -225,16 +225,20 @@ To format the prediction results from the model output, or to merge prediction r
 
 For privacy leakage classification task:
 ```bash
-python output/get_pred_results_leakage.py -d <test data path> -o <model prediction path> --language <dataset language> 
+python output/get_pred_results_leakage.py --raw_data <test data path> --output_file <model prediction path> --language <dataset language> 
 ```
 For privacy phrase extraction task:
 ```bash
-python output/get_pred_results_phrase.py -d <test data path> -o <model prediction path> --language <dataset language>   
+python output/get_pred_results_phrase.py --raw_data <test data path> --output_file <model prediction path> --language <dataset language>   
 ```
 For privacy information summarization task:
 ```bash
-python output/get_pred_results_information.py -d <test data path> -o <model prediction path> --language <dataset language> 
+python output/get_pred_results_information.py --raw_data <test data path> --output_file <model prediction path> --language <dataset language> 
 ```
+The whole parameter set of these scripts:  
+- raw_data: the test set path of ground truth for evaluation, also accepts Hugging Face repository name
+- output_file: the path of the predicted data
+- language: the language of the dataset, support English ("en") and Chinese ("zh")
 
 To get evaluation results based on test set, you can run following scripts.
 For privacy leakage classification task, we adopt accuracy to  assess performance.
