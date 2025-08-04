@@ -189,8 +189,8 @@ if __name__ == "__main__":
     parser.add_argument('--data_path', '-d', type=str, default="Nidhogg-zh/Interaction_Dialogue_with_Privacy", help="data path")
     parser.add_argument('--output_path', '-o', type=str, default="output/shareGPT/Qwen_few-shot/Qwen2.5-7B-Instruct/privacy_information_dev.json", help="output path")
     parser.add_argument('--few-shot', '-f', action='store_true', help="whether use few shot")
-    parser.add_argument('--phrase_only', type=bool, default=False, help="whether the model is tuned to predict only phrase")
-    parser.add_argument('--leakage_only', type=bool, default=False, help="whether the model is tuned to predict only leakage")
+    parser.add_argument('--phrase_only', action='store_true', help="whether the model is tuned to predict only phrase")
+    parser.add_argument('--leakage_only', action='store_true', help="whether the model is tuned to predict only leakage")
     parser.add_argument('--start_idx', '-s', type=int, default=0)
     parser.add_argument('--end_idx', '-e', type=int, default=None)
     parser.add_argument('--language', '-l', type=str, default="en")
@@ -245,5 +245,4 @@ if __name__ == "__main__":
     ## merge result
     # os.makedirs(os.path.split(output_path)[0], exist_ok=True)
     # json.dump(results, open(output_path, 'w'), ensure_ascii=False, indent=4)
-    
     

@@ -84,24 +84,31 @@ def merge_raw_data(output_results, raw_data, output_dir):
             #### Remove Repeat
             conv['privacy'] = json_output
     print("Generation Error Count:", error_count)
-    json.dump(new_data, open(os.path.join(output_dir, "privacy_information_dev.json"), 'w'), ensure_ascii=False, indent=4)
+    json.dump(new_data, open(os.path.join(output_dir, "privacy_information_test_final.json"), 'w'), ensure_ascii=False, indent=4)
     return new_data
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='argparse')
-    parser.add_argument('--raw_data', '-d', type=str, default="dataset/privacy_data/shareGPT/privacy_information_dev.json", help="raw data")
-    parser.add_argument('--output_dir', '-o', type=str, default="output/shareGPT_phrase_only/Qwen_zero-shot/Qwen2.5-72B-Instruct", help="output dir")
+    parser.add_argument('--raw_data', '-d', type=str, default="Nidhogg-zh/Interaction_Dialogue_with_Privacy", help="raw data")
+    parser.add_argument('--output_file', '-o', type=str, default="output/shareGPT_phrase_only/Qwen_zero-shot/Qwen2.5-72B-Instruct/privacy_information_test.json", help="output file path")
+    parser.add_argument('--language', type=str, default="en", help="")
     args = parser.parse_args()
 
-    with open(args.raw_data) as f:
-        raw_data = json.load(f)
+    if os.path.exists(args.raw_data):
+        with open(args.raw_data) as f:
+            raw_data = json.load(f)
+    else:
+        import datasets
+        dataset = datasets.load_dataset(args.raw_data, args.language)
+        raw_data = dataset['test'].to_list()
     conv_num = 0
     for item in raw_data:
         conv_num += len(item['conversation'])
     print("CONV_NUM", conv_num)
 
-    output_dir = args.output_dir
-    output_results = merge_result(output_dir)
+    output_file = args.output_file
+    output_dir = os.path.split(output_file)[0]
+    output_results = json.load(open(output_file))
     new_data = merge_raw_data(output_results, raw_data, output_dir)
     print(len(new_data))

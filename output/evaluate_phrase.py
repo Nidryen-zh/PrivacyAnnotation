@@ -144,8 +144,8 @@ def reform_data_order(ground_truth, prediction):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='argparse')
-    parser.add_argument('--label_file_path', '-l', type=str, default='dataset/privacy_data/shareGPT/privacy_information_dev.json', help="raw data")
-    parser.add_argument('--pred_file_path', '-p', type=str, default="output/shareGPT/Qwen_zero-shot/Qwen2.5-72B-Instruct/privacy_information_dev.json", help="output dir")
+    parser.add_argument('--label_file_path', '-l', type=str, default='Nidhogg-zh/Interaction_Dialogue_with_Privacy', help="raw data")
+    parser.add_argument('--pred_file_path', '-p', type=str, default="output/shareGPT/Qwen_zero-shot/Qwen2.5-72B-Instruct/privacy_information_test.json", help="output dir")
     parser.add_argument('--language', type=str, default="en", help="")
 
     args = parser.parse_args()
@@ -159,7 +159,7 @@ if __name__ == '__main__':
     if type(label_file_path) == str and (not os.path.exists(label_file_path)):
         import datasets
         dataset = datasets.load_dataset(label_file_path, args.language)
-        ground_truth = dataset['test']
+        ground_truth = dataset['test'].to_list()
     else:
         ground_truth = load_data(label_file_path)
 

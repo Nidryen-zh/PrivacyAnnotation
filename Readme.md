@@ -200,7 +200,7 @@ The whole parameter set of this script:
 
 Here is an example for evaluating the performance of Qwen2.5-1.5B-Instruct with zero-shot generation for privacy phrase extraction task:
 ```bash
-python evaluate_vllm.py --model_name Qwen/Qwen2.5-1.5B-Instruct --data_path Nidhogg-zh/Interaction_Dialogue_with_Privacy --output_path output/phrase_test_result.json --language en
+python evaluate_vllm.py --model_name Qwen/Qwen2.5-1.5B-Instruct --data_path Nidhogg-zh/Interaction_Dialogue_with_Privacy --output_path output/phrase_test_result.json --language en --phrase_only
 ```
 
 For cloud-based API: 
@@ -221,19 +221,19 @@ The whole parameter set of this script:
 Since datasets are often large, it is recommended to divide them into smaller segments using the predefined parameters start_idx and end_idx for API-based evaluation to reduce the impact caused by interruptions. 
 
 #### Get evaluation resutls
-To merge the prediction resutls from different local ranks (only for multi-gpu prediction), you can run following python file. 
+To format the prediction results from the model output, or to merge prediction results from different local ranks (for multi-GPU prediction), you can run the following python script.
 
 For privacy leakage classification task:
 ```bash
-python output/get_pred_results_leakage.py -d <test data path> -o <model prediction path>    
+python output/get_pred_results_leakage.py -d <test data path> -o <model prediction path> --language <dataset language> 
 ```
 For privacy phrase extraction task:
 ```bash
-python output/get_pred_results_phrase.py -d <test data path> -o <model prediction path>      
+python output/get_pred_results_phrase.py -d <test data path> -o <model prediction path> --language <dataset language>   
 ```
 For privacy information summarization task:
 ```bash
-python output/get_pred_results_information.py -d <test data path> -o <model prediction path> 
+python output/get_pred_results_information.py -d <test data path> -o <model prediction path> --language <dataset language> 
 ```
 
 To get evaluation results based on test set, you can run following scripts.
